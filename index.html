@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#047857">
+  <meta name="description" content="KasKu — aplikasi pencatatan keuangan pemasukan & pengeluaran yang ringan, rapi, dan berjalan 100% offline.">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="KasKu">
+  <title>KasKu — Catatan Keuangan</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="./icons/icon.svg">
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="./app.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- ================= HEADER ================= -->
+    <header class="app-header">
+      <div class="brand">
+        <img class="brand-logo" src="./icons/icon-192.png" alt="Logo KasKu" width="38" height="38">
+        <div class="brand-text">
+          <h1>KasKu</h1>
+          <p>Catatan Keuangan Offline</p>
+        </div>
+      </div>
+      <button id="btnTheme" class="icon-btn" type="button" aria-label="Ganti tema">
+        <svg viewBox="0 0 24 24" class="ic"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/></svg>
+      </button>
+    </header>
+
+    <!-- ================= VIEW: BERANDA ================= -->
+    <main>
+    <section id="view-home" class="view active" aria-label="Beranda">
+
+      <div class="month-bar">
+        <button id="btnPrevMonth" class="icon-btn sm" type="button" aria-label="Bulan sebelumnya">
+          <svg viewBox="0 0 24 24" class="ic"><path d="M15 5l-7 7 7 7"/></svg>
+        </button>
+        <div class="month-label">
+          <span id="monthName">—</span>
+          <small id="monthHint">&nbsp;</small>
+        </div>
+        <button id="btnNextMonth" class="icon-btn sm" type="button" aria-label="Bulan berikutnya">
+          <svg viewBox="0 0 24 24" class="ic"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+
+      <div class="card balance-card">
+        <span class="card-label">Saldo Bulan Ini</span>
+        <strong id="sumBalance" class="balance-value">Rp 0</strong>
+        <div class="balance-row">
+          <div class="mini-stat">
+            <span class="dot income"></span>
+            <div>
+              <small>Pemasukan</small>
+              <b id="sumIncome" class="txt-income">Rp 0</b>
+            </div>
+          </div>
+          <div class="mini-stat">
+            <span class="dot expense"></span>
+            <div>
+              <small>Pengeluaran</small>
+              <b id="sumExpense" class="txt-expense">Rp 0</b>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quick-grid">
+        <div class="card quick-card">
+          <small>Transaksi</small>
+          <b id="quickCount">0</b>
+          <span id="quickCountNote">bulan ini</span>
+        </div>
+        <div class="card quick-card">
+          <small>Rata-rata/Hari</small>
+          <b id="quickAvg">Rp 0</b>
+          <span>pengeluaran</span>
+        </div>
+        <div class="card quick-card wide">
+          <small>Kategori Terbesar</small>
+          <b id="quickTopCat">—</b>
+          <span id="quickTopCatNote">belum ada data</span>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <h2>Transaksi Terakhir</h2>
+        <button class="link-btn" type="button" data-goto="history">Lihat semua</button>
+      </div>
+      <div id="recentList" class="tx-list"></div>
+    </section>
+
+    <!-- ================= VIEW: GRAFIK ================= -->
+    <section id="view-chart" class="view" aria-label="Grafik">
+      <div class="month-bar">
+        <button id="btnPrevMonth2" class="icon-btn sm" type="button" aria-label="Bulan sebelumnya">
+          <svg viewBox="0 0 24 24" class="ic"><path d="M15 5l-7 7 7 7"/></svg>
+        </button>
+        <div class="month-label">
+          <span id="monthName2">—</span>
+          <small>Grafik &amp; Analisa</small>
+        </div>
+        <button id="btnNextMonth2" class="icon-btn sm" type="button" aria-label="Bulan berikutnya">
+          <svg viewBox="0 0 24 24" class="ic"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+
+      <div class="card chart-card">
+        <div class="section-head tight">
+          <h2>Pemasukan vs Pengeluaran</h2>
+          <div class="legend-inline">
+            <span><i class="dot income"></i>Masuk</span>
+            <span><i class="dot expense"></i>Keluar</span>
+          </div>
+        </div>
+        <div id="barChart" class="chart-box"></div>
+      </div>
+
+      <div class="card chart-card">
+        <div class="section-head tight"><h2>Pengeluaran per Kategori</h2></div>
+        <div id="donutChart" class="chart-box"></div>
+      </div>
+
+      <div class="card chart-card">
+        <div class="section-head tight"><h2>Tren Pengeluaran Harian</h2></div>
+        <div id="trendChart" class="chart-box"></div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW: RIWAYAT ================= -->
+    <section id="view-history" class="view" aria-label="Riwayat">
+      <div class="card filter-card">
+        <input id="searchInput" type="search" placeholder="Cari catatan atau kategori…" autocomplete="off">
+        <div class="chip-row" id="typeChips">
+          <button class="chip active" type="button" data-type="all">Semua</button>
+          <button class="chip" type="button" data-type="income">Pemasukan</button>
+          <button class="chip" type="button" data-type="expense">Pengeluaran</button>
+        </div>
+        <select id="catSelect" aria-label="Filter kategori">
+          <option value="all">Semua kategori</option>
+        </select>
+      </div>
+
+      <div id="historySummary" class="history-summary"></div>
+      <div id="historyList" class="tx-list"></div>
+    </section>
+
+    <!-- ================= VIEW: PENGATURAN ================= -->
+    <section id="view-settings" class="view" aria-label="Pengaturan">
+      <div class="card set-card">
+        <h3>Tema Tampilan</h3>
+        <div class="seg" id="themeSeg">
+          <button type="button" data-theme-choice="light">Terang</button>
+          <button type="button" data-theme-choice="dark">Gelap</button>
+          <button type="button" data-theme-choice="system">Sistem</button>
+        </div>
+      </div>
+
+      <div class="card set-card">
+        <h3>Cadangan Data</h3>
+        <p class="set-note">Semua data tersimpan aman di HP ini (offline). Unduh cadangan agar tidak hilang saat ganti HP atau hapus browser.</p>
+        <div class="btn-col">
+          <button id="btnExport" class="btn ghost" type="button">
+            <svg viewBox="0 0 24 24" class="ic"><path d="M12 3v12M7.5 10.5 12 15l4.5-4.5M4 20h16"/></svg>
+            Ekspor Cadangan (JSON)
+          </button>
+          <button id="btnImport" class="btn ghost" type="button">
+            <svg viewBox="0 0 24 24" class="ic"><path d="M12 15V3M7.5 7.5 12 3l4.5 4.5M4 20h16"/></svg>
+            Impor Cadangan
+          </button>
+          <input id="importFile" type="file" accept="application/json,.json" hidden>
+        </div>
+      </div>
+
+      <div class="card set-card">
+        <h3>Pasang di Layar Utama</h3>
+        <p class="set-note">Buka KasKu lewat browser, lalu tekan tombol di bawah (jika tersedia) atau menu browser → <b>“Tambahkan ke layar utama / Install app”</b>. KasKu akan muncul seperti aplikasi biasa dan tetap jalan tanpa internet.</p>
+        <button id="btnInstall" class="btn primary" type="button" hidden>Pasang Aplikasi Sekarang</button>
+      </div>
+
+      <div class="card set-card danger-card">
+        <h3>Bahaya</h3>
+        <div class="btn-col">
+          <button id="btnReset" class="btn danger" type="button">
+            <svg viewBox="0 0 24 24" class="ic"><path d="M4 7h16M9 7V4h6v3M6.5 7l1 13h9l1-13M10 11v6M14 11v6"/></svg>
+            Hapus Semua Data
+          </button>
+        </div>
+      </div>
+
+      <div class="card set-card about">
+        <h3>Tentang</h3>
+        <ul class="about-list">
+          <li><span>Versi</span><b id="aboutVersion">—</b></li>
+          <li><span>Jumlah transaksi</span><b id="aboutCount">0</b></li>
+          <li><span>Ukuran data</span><b id="aboutSize">0 KB</b></li>
+          <li><span>Koneksi internet</span><b id="aboutNet">—</b></li>
+        </ul>
+        <p class="set-note">Dibuat untuk Baginda Raja — ringan, rapi, privat. 100% offline, tanpa server, tanpa iklan.</p>
+      </div>
+    </section>
+    </main>
+
+    <!-- ================= FAB & NAV ================= -->
+    <button id="fabAdd" class="fab" type="button" aria-label="Tambah transaksi">
+      <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+
+    <nav class="bottom-nav" aria-label="Navigasi utama">
+      <button class="nav-item active" type="button" data-view="home">
+        <svg viewBox="0 0 24 24" class="ic"><path d="M3.5 10.6 12 3.5l8.5 7.1"/><path d="M5.6 9.4V20h12.8V9.4"/><path d="M9.8 20v-5.4h4.4V20"/></svg>
+        <span>Beranda</span>
+      </button>
+      <button class="nav-item" type="button" data-view="chart">
+        <svg viewBox="0 0 24 24" class="ic"><path d="M4.5 20V11.5M10 20V4.5M15.5 20v-6M21 20H3"/></svg>
+        <span>Grafik</span>
+      </button>
+      <button class="nav-item" type="button" data-view="history">
+        <svg viewBox="0 0 24 24" class="ic"><path d="M9 6h12M9 12h12M9 18h12"/><circle cx="4.4" cy="6" r="1.3"/><circle cx="4.4" cy="12" r="1.3"/><circle cx="4.4" cy="18" r="1.3"/></svg>
+        <span>Riwayat</span>
+      </button>
+      <button class="nav-item" type="button" data-view="settings">
+        <svg viewBox="0 0 24 24" class="ic"><path d="M4 7.5h8.5M18.5 7.5H20M4 16.5h3.5M13.5 16.5H20"/><circle cx="15.5" cy="7.5" r="2.6"/><circle cx="10.5" cy="16.5" r="2.6"/></svg>
+        <span>Atur</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- ================= SHEET FORM ================= -->
+  <div id="sheetBackdrop" class="backdrop" hidden></div>
+  <section id="sheet" class="sheet" hidden aria-label="Form transaksi">
+    <div class="sheet-handle"></div>
+    <div class="sheet-head">
+      <h2 id="sheetTitle">Tambah Transaksi</h2>
+      <button id="btnCloseSheet" class="icon-btn sm" type="button" aria-label="Tutup">
+        <svg viewBox="0 0 24 24" class="ic"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+
+    <div class="seg type-seg" id="typeSeg">
+      <button type="button" data-form-type="expense" class="active">Pengeluaran</button>
+      <button type="button" data-form-type="income">Pemasukan</button>
+    </div>
+
+    <label class="amount-wrap">
+      <span class="amount-label">Nominal</span>
+      <div class="amount-field">
+        <span class="rp">Rp</span>
+        <input id="inpAmount" type="text" inputmode="numeric" placeholder="0" autocomplete="off">
+      </div>
+    </label>
+
+    <div class="field">
+      <span class="field-label">Kategori</span>
+      <div id="catChips" class="chip-row wrap"></div>
+    </div>
+
+    <div class="field">
+      <span class="field-label">Tanggal</span>
+      <input id="inpDate" type="date">
+    </div>
+
+    <div class="field">
+      <span class="field-label">Catatan <small>(opsional)</small></span>
+      <input id="inpNote" type="text" maxlength="80" placeholder="mis. beli nasi goreng" autocomplete="off">
+    </div>
+
+    <div class="sheet-actions">
+      <button id="btnDeleteTx" class="btn danger" type="button" hidden>
+        <svg viewBox="0 0 24 24" class="ic"><path d="M4 7h16M9 7V4h6v3M6.5 7l1 13h9l1-13M10 11v6M14 11v6"/></svg>
+        Hapus
+      </button>
+      <button id="btnSaveTx" class="btn primary grow" type="button">
+        <svg viewBox="0 0 24 24" class="ic"><path d="M5 12.5 10 17.5 19.5 7"/></svg>
+        Simpan
+      </button>
+    </div>
+  </section>
+
+  <!-- ================= DIALOG & TOAST ================= -->
+  <div id="dialogBackdrop" class="backdrop center" hidden>
+    <div class="dialog" role="dialog" aria-modal="true">
+      <h3 id="dialogTitle">Konfirmasi</h3>
+      <p id="dialogText"></p>
+      <div class="dialog-actions">
+        <button id="dialogNo" class="btn ghost" type="button">Batal</button>
+        <button id="dialogYes" class="btn danger" type="button">Ya, lanjutkan</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
